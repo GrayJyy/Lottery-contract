@@ -18,3 +18,7 @@ Second : Change our own contract state (include events emitting)
 Last : Interact with other contracts
 It's very important for every developer~
 # Lottery-contract
+1. Participants enter the lottery.
+2. Later, when certain conditions are satisfied, the Chainlink will invoke the `performUpkeep` function, which in turn calls the `checkUpkeep` to verify the conditions.
+3. Once the conditions are confirmed, the `pickWinner` function, which contains our custom logic, is executed. This function requests a random number by calling Chainlink VRF's `requestRandomWords` and waits for the transaction to be confirmed. After confirmation, Chainlink VRF generates a random number and uses the callback function `fulfillRandomWords` to deliver the random number, which we then use for further processing.
+> tips: the `performUpkeep` and `checkUpkeep` is the AutomationCompatibleInterface's implement;the `requestRandomWords` and `fulfillRandomWords` is the VRFConsumerBaseV2's implement.
