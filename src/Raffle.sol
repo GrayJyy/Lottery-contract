@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 
 /**
  * @title a contract for raffle
@@ -10,11 +11,12 @@ import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2
  * @notice for learing solidity
  * @dev implements Chainlink VRF v2
  */
-contract Raffle is VRFConsumerBaseV2 {
+contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     error Raffle__NotEnoughFee();
-    error Raffle__TimeNotUp();
+    // error Raffle__TimeNotUp();
     error Raffle__PaymentFailed();
     error Raffle__NotOpen();
+    error Raffle__UpkeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint256 raffleState);
 
     enum RaffleStatus {
         OPEN, // 0
@@ -67,14 +69,59 @@ contract Raffle is VRFConsumerBaseV2 {
         emit EnterRaffle(msg.sender);
     }
 
-    function pinkWinner() external {
-        if (block.timestamp < s_startTime + i_interval) {
-            revert Raffle__TimeNotUp();
-        }
+    function pinkWinner() internal {
+        // if (block.timestamp < s_startTime + i_interval) {
+        //     revert Raffle__TimeNotUp();
+        // }
         s_raffleStatus = RaffleStatus.CALCULATING;
         i_vrfCoordinator.requestRandomWords(
             i_keyHash, i_subscriptionId, REQUEST_CONFIRMATIONS, i_callbackGasLimit, NUM_WORDS
         );
+    }
+
+    /**
+     * @dev This is the function that the Chainlink Keeper nodes call
+     * they look for `upkeepNeeded` to return True.
+     * the following should be true for this to return true:
+     * 1. The time interval has passed between raffle runs.
+     * 2. The lottery is open.
+     * 3. The contract has ETH.
+     * 4. Implicity, your subscription is funded with LINK.
+     */
+    function checkUpkeep(bytes memory)
+        /**
+         * checkData
+         */
+        public
+        view
+        returns (bool upkeepNeeded, bytes memory)
+    /**
+     * performData
+     */
+    {
+        bool isOpen = RaffleStatus.OPEN == s_raffleStatus;
+        bool timePassed = ((block.timestamp - s_startTime) > i_interval);
+        bool hasBalance = address(this).balance > 0;
+        upkeepNeeded = (timePassed && isOpen && hasBalance);
+        return (upkeepNeeded, "0x0"); // can we comment this out?
+    }
+
+    /**
+     *
+     * @dev
+     * chainlink will automatically call this function,and it will be worked when checkUpkeep returns true.Instead of call pinkWinner manually.
+     */
+    function performUpkeep(bytes calldata)
+        /**
+         * performData
+         */
+        external
+    {
+        (bool checkUpkeep_,) = checkUpkeep("");
+        if (!checkUpkeep_) {
+            revert Raffle__UpkeepNotNeeded(address(this).balance, s_participants.length, uint256(s_raffleStatus));
+        }
+        pinkWinner();
     }
 
     function fulfillRandomWords(uint256, uint256[] memory randomWords) internal override {
