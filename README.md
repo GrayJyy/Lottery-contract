@@ -17,6 +17,13 @@ First : require(...)...
 Second : Change our own contract state (include events emitting)
 Last : Interact with other contracts
 It's very important for every developer~
+
+> About Tests
+
+1. deploy scripts
+2. tests work on a local chain
+3. tests work on a forked testnet
+4.tests work on a forked mainnet
 # Lottery-contract
 1. Participants enter the lottery.
 2. Later, when certain conditions are satisfied, the Chainlink will invoke the `performUpkeep` function, which in turn calls the `checkUpkeep` to verify the conditions.
