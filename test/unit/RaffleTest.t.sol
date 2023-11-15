@@ -2,23 +2,53 @@
 
 pragma solidity ^0.8.19;
 
-import {Test, console} from "forge-std/Test.sol";
-import {StdCheats} from "forge-std/StdCheats.sol";
+import {Test} from "forge-std/Test.sol";
+// import {Vm} from "forge-std/Vm.sol";
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 
-contract RaffleTest is StdCheats, Test {
+contract RaffleTest is Test {
     constructor() {}
 
     Raffle public raffle;
     HelperConfig public helperConfig;
+    uint64 subscriptionId;
+    bytes32 keyHash;
+    uint256 interval;
+    uint256 entranceFee;
+    uint32 callbackGasLimit;
+    address vrfCoordinator;
 
-    address public palyer = makeAddr("player");
+    address public player = makeAddr("player");
     uint256 public constant STARTING_BALANCE = 100 ether;
 
     function setUp() external {
         DeployRaffle deployer = new DeployRaffle();
         (raffle, helperConfig) = deployer.run();
+        vm.deal(player, STARTING_BALANCE);
+        (, keyHash, interval, entranceFee, callbackGasLimit, vrfCoordinator) = helperConfig.activeNetworkConfig();
+    }
+
+    /**
+     * @dev test constructor
+     */
+    function testRaffle_ShouldInOpenState_WhenInitializes() public view {
+        assert(raffle.getRaffleState() == Raffle.RaffleStatus.OPEN);
+    }
+
+    /**
+     * @dev test enterRaffle
+     */
+    function testRaffle_ShouldReverts_WhenPaymentIsNotEnough() public {
+        vm.prank(player);
+        vm.expectRevert(Raffle.Raffle__NotEnoughFee.selector);
+        raffle.enterRaffle();
+    }
+
+    function testRaffle_ShouldRecordsPlayers_WhenTheyEnter() public {
+        vm.prank(player);
+        raffle.enterRaffle{value: entranceFee}();
+        assert(raffle.getPlayer(0) == player);
     }
 }

@@ -6,12 +6,12 @@ import {VRFCoordinatorV2Mock} from "@chainlink/contracts/src/v0.8/mocks/VRFCoord
 
 contract HelperConfig is Script {
     struct NetworkConfig {
-        uint256 entranceFee;
-        uint256 interval;
-        address vrfCoordinator;
-        bytes32 keyHash;
         uint64 subscriptionId;
+        bytes32 keyHash;
+        uint256 interval;
+        uint256 entranceFee;
         uint32 callbackGasLimit;
+        address vrfCoordinator;
     }
 
     NetworkConfig public activeNetworkConfig;
