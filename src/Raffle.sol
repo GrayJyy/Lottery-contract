@@ -43,7 +43,6 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     constructor(
         uint256 entranceFee_,
         uint256 interval_,
-        uint256 startTime_,
         address vrfCoordinator_,
         bytes32 keyHash_,
         uint64 subscriptionId_,
@@ -51,7 +50,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     ) VRFConsumerBaseV2(vrfCoordinator_) {
         i_entranceFee = entranceFee_;
         i_interval = interval_;
-        s_startTime = startTime_;
+        s_startTime = block.timestamp;
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinator_);
         i_keyHash = keyHash_;
         i_subscriptionId = subscriptionId_;
@@ -141,7 +140,39 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     /**
      * Getting Functions
      */
-    function entranceFee() external view returns (uint256) {
+    function getRaffleState() public view returns (RaffleStatus) {
+        return s_raffleStatus;
+    }
+
+    function getNumWords() public pure returns (uint256) {
+        return NUM_WORDS;
+    }
+
+    function getRequestConfirmations() public pure returns (uint256) {
+        return REQUEST_CONFIRMATIONS;
+    }
+
+    function getRecentWinner() public view returns (address) {
+        return s_winner;
+    }
+
+    function getPlayer(uint256 index) public view returns (address) {
+        return s_participants[index];
+    }
+
+    function getLastTimeStamp() public view returns (uint256) {
+        return s_startTime;
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
+    }
+
+    function getEntranceFee() public view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getNumberOfPlayers() public view returns (uint256) {
+        return s_participants.length;
     }
 }
