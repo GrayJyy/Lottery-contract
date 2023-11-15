@@ -11,6 +11,8 @@ import {HelperConfig} from "../../script/HelperConfig.s.sol";
 contract RaffleTest is Test {
     constructor() {}
 
+    event EnterRaffle(address indexed participant);
+
     Raffle public raffle;
     HelperConfig public helperConfig;
     uint64 subscriptionId;
@@ -50,5 +52,12 @@ contract RaffleTest is Test {
         vm.prank(player);
         raffle.enterRaffle{value: entranceFee}();
         assert(raffle.getPlayer(0) == player);
+    }
+
+    function testRaffle_ShouldEmitsEvent_WhenEnterSuccessfully() public {
+        vm.prank(player);
+        vm.expectEmit(true, false, false, false, address(raffle));
+        emit EnterRaffle(player);
+        raffle.enterRaffle{value: entranceFee}();
     }
 }
