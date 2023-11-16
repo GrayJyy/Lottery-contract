@@ -33,15 +33,12 @@ contract RaffleTest is Test {
     }
 
     /**
-     * @dev test constructor
+     * @dev test enterRaffle
      */
     function testRaffle_ShouldInOpenState_WhenInitializes() public view {
         assert(raffle.getRaffleState() == Raffle.RaffleStatus.OPEN);
     }
 
-    /**
-     * @dev test enterRaffle
-     */
     function testRaffle_ShouldReverts_WhenPaymentIsNotEnough() public {
         vm.prank(player);
         vm.expectRevert(Raffle.Raffle__NotEnoughFee.selector);

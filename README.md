@@ -13,9 +13,9 @@ This code is to create a provable random smart contract lottery.
 ## For development
 > CEI (Checks -> Effects -> Interactions)
 
-First : require(...)...
-Second : Change our own contract state (include events emitting)
-Last : Interact with other contracts
+1. require(...)...
+2. Change our own contract state (include events emitting)
+3. Interact with other contracts
 It's very important for every developer~
 
 > About Tests
