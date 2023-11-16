@@ -15,21 +15,17 @@ contract RaffleTest is Test {
 
     Raffle public raffle;
     HelperConfig public helperConfig;
-    uint64 subscriptionId;
-    bytes32 keyHash;
     uint256 interval;
     uint256 entranceFee;
-    uint32 callbackGasLimit;
-    address vrfCoordinator;
 
     address public player = makeAddr("player");
     uint256 public constant STARTING_BALANCE = 100 ether;
 
     function setUp() external {
+        vm.deal(player, STARTING_BALANCE);
         DeployRaffle deployer = new DeployRaffle();
         (raffle, helperConfig) = deployer.run();
-        vm.deal(player, STARTING_BALANCE);
-        (, keyHash, interval, entranceFee, callbackGasLimit, vrfCoordinator,) = helperConfig.activeNetworkConfig();
+        (,, interval, entranceFee,,,,) = helperConfig.activeNetworkConfig();
     }
 
     /**
