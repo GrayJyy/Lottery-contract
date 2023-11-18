@@ -24,6 +24,21 @@ contract RaffleTest is Test {
     address public player = makeAddr("player");
     uint256 public constant STARTING_BALANCE = 100 ether;
 
+    modifier RaffleEnterAndTimePassed() {
+        vm.prank(player);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1);
+        vm.roll(block.number + 3);
+        _;
+    }
+
+    modifier SkipFocker() {
+        if (block.chainid != 31337) {
+            return;
+        }
+        _;
+    }
+
     function setUp() external {
         DeployRaffle deployer = new DeployRaffle();
         (raffle, helperConfig) = deployer.run();
@@ -123,21 +138,6 @@ contract RaffleTest is Test {
         Raffle.RaffleStatus raffleState = raffle.getRaffleState();
         assert(uint256(requestId) > 0);
         assert(raffleState == Raffle.RaffleStatus.CALCULATING);
-    }
-
-    modifier RaffleEnterAndTimePassed() {
-        vm.prank(player);
-        raffle.enterRaffle{value: entranceFee}();
-        vm.warp(block.timestamp + interval + 1);
-        vm.roll(block.number + 3);
-        _;
-    }
-
-    modifier SkipFocker() {
-        if (block.chainid != 31337) {
-            return;
-        }
-        _;
     }
 
     /**

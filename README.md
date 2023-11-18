@@ -56,6 +56,7 @@ make sure your VRF config is right. eg:the `REQUEST_CONFIRMATIONS`'s
 `forge test --mt functionName -vvvvv` means run the certain function test and get more detail
 `forge coverage` means check the test coverage
 `forge coverage --report debug > coverage.txt` means get the test report
+`forge test --debug` means check the evm code
 
 ## About config
 >How to install the packages?
@@ -70,6 +71,18 @@ import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interface
 ```shell
 remappings = ['@chainlink/contracts=lib/chainlink-brownie-contracts/contracts']
 ```
+
+## About verify
+>If you can not verify on real network,please follow in order
+
+1. delete: "chainlink-brownie-contract" Folder and "FoundryDevOps" Folder from lib and reinstall them by the following command.
+
+2. `forge install Cyfrin/foundry-devops@0.0.11 --no-commit && forge install smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit && forge install foundry-rs/forge-std@v1.5.3 --no-commit && forge install transmissions11/solmate@v6 --no-commit`
+
+3. check your terminal proxy and run `make deploy ARGS="--network sepolia"`
+
+## About cast
+> run `cast --help` to learn how to interact with the blockchain without leaving your terminal...
 
 
 # Lottery-contract

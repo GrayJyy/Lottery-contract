@@ -34,7 +34,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     uint32 private immutable i_callbackGasLimit;
     uint256 private s_startTime;
     address payable private s_winner;
-    address payable[] s_participants;
+    address payable[] private s_participants;
     RaffleStatus private s_raffleStatus = RaffleStatus.OPEN;
 
     event EnterRaffle(address indexed participant);
