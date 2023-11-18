@@ -4,6 +4,12 @@
 
 This code is to create a provable random smart contract lottery.
 
+## Guide
+
+1. set your own `.env`
+2. run `make install`
+3. run `maek deploy`
+
 ## Description
 
 1. Users can enter by paying for a ticket,and the ticket fee are going to the winner during the draw.
