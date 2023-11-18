@@ -42,6 +42,36 @@ Finally, we need to integrate the interaction contract into the deployment proce
 
 Verify that all contract deployments are enclosed within vm.startBroadcast and vm.stopBroadcast. This is crucial because the caller of addConsumer must be the same as the caller of createSubscription. This setup simulates the scenario where you connect your wallet to the Chainlink website to create a subscription, and subsequently, you must add the consumer using the same connection. This process mirrors real-world operations where consistency in authorization is key.
 
+> `testPerformUpkeep_ShouldReverts_WhenUpkeepNotNeeded` already have balance that make this test failed
+
+Just empty your broadcast files and deploy your Raffle again.And make sure you already set deploy key.
+
+> Find a custom Error which is not defined in your contact...
+
+make sure your VRF config is right. eg:the `REQUEST_CONFIRMATIONS`'s
+ minimum is 3,and the gas limit's maximum is 2,500,000...
+
+### test scripts
+`forge test` means run all the test
+`forge test --mt functionName -vvvvv` means run the certain function test and get more detail
+`forge coverage` means check the test coverage
+`forge coverage --report debug > coverage.txt` means get the test report
+
+## About config
+>How to install the packages?
+
+`forge install repos --no-commit`
+
+>how to relocate the imports which are start with `@` ?
+```solidity
+// the imports be like
+import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+```
+```shell
+remappings = ['@chainlink/contracts=lib/chainlink-brownie-contracts/contracts']
+```
+
+
 # Lottery-contract
 1. Participants enter the lottery.
 2. Later, when certain conditions are satisfied, the Chainlink will invoke the `performUpkeep` function, which in turn calls the `checkUpkeep` to verify the conditions.

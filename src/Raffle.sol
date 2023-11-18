@@ -68,16 +68,6 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
         emit EnterRaffle(msg.sender);
     }
 
-    function pinkWinner() internal {
-        // if (block.timestamp < s_startTime + i_interval) {
-        //     revert Raffle__TimeNotUp();
-        // }
-        s_raffleStatus = RaffleStatus.CALCULATING;
-        i_vrfCoordinator.requestRandomWords(
-            i_keyHash, i_subscriptionId, REQUEST_CONFIRMATIONS, i_callbackGasLimit, NUM_WORDS
-        );
-    }
-
     /**
      * @dev This is the function that the Chainlink Keeper nodes call
      * they look for `upkeepNeeded` to return True.
@@ -120,7 +110,10 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
         if (!checkUpkeep_) {
             revert Raffle__UpkeepNotNeeded(address(this).balance, s_participants.length, uint256(s_raffleStatus));
         }
-        pinkWinner();
+        s_raffleStatus = RaffleStatus.CALCULATING;
+        i_vrfCoordinator.requestRandomWords(
+            i_keyHash, i_subscriptionId, REQUEST_CONFIRMATIONS, i_callbackGasLimit, NUM_WORDS
+        );
     }
 
     function fulfillRandomWords(uint256, uint256[] memory randomWords) internal override {

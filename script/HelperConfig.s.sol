@@ -35,7 +35,7 @@ contract HelperConfig is Script {
             keyHash: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
             interval: 30, // 30 seconds
             entranceFee: 0.01 ether,
-            callbackGasLimit: 500000, // 500,000 gas
+            callbackGasLimit: 250000, // 2,500,000 gas
             vrfCoordinator: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
             link: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
             deployerKey: vm.envUint("PRIVATE_KEY")
@@ -59,7 +59,7 @@ contract HelperConfig is Script {
             keyHash: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
             interval: 30, // 30 seconds
             entranceFee: 0.01 ether,
-            callbackGasLimit: 500000, // 500,000 gas
+            callbackGasLimit: 250000, // 2,500,000 gas
             vrfCoordinator: address(vrfCoordinator),
             link: address(link),
             deployerKey: DEFAULT_ANVIL_PRIVATE_KEY
